@@ -10,7 +10,7 @@ import requests
 from src.plugins.base import PluginBase, PluginResult
 
 logger = logging.getLogger(__name__)
-ESPN_LEAGUE_URL = "https://fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}"
+ESPN_LEAGUE_URL = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/{year}/segments/0/leagues/{league_id}"
 USER_AGENT = "FiestaBoard (https://github.com/FiestaBoard/FiestaBoard)"
 REQUEST_TIMEOUT_SECONDS = 15
 

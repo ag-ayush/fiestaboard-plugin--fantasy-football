@@ -203,6 +203,7 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
     league = plugin._fetch_league(42, 2026)
     assert league["current_week"] == 4
     assert league["schedule"] == [{"home": {"teamId": 1}}]
+    assert "lm-api-reads.fantasy.espn.com" in calls[0][0]
     assert calls[1][1][-1] == ("scoringPeriodId", 4)
     assert '"value": [3]' in calls[1][2]["x-fantasy-filter"]
 
