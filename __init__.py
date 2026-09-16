@@ -243,13 +243,17 @@ class FantasyFootballPlugin(PluginBase):
             "team2_players_remaining": FantasyFootballPlugin._players_remaining(
                 opponent, league.get("starter_count", 0)
             ),
-            "score1": FantasyFootballPlugin._format_score(current),
-            "score2": FantasyFootballPlugin._format_score(opponent),
+            "team1_score": FantasyFootballPlugin._format_score(current),
+            "team2_score": FantasyFootballPlugin._format_score(opponent),
             "score_margin": FantasyFootballPlugin._format_score_margin(
                 current, opponent
             ),
-            "score1_projected": FantasyFootballPlugin._format_projected(current),
-            "score2_projected": FantasyFootballPlugin._format_projected(opponent),
+            "team1_score_projected": FantasyFootballPlugin._format_projected(
+                current
+            ),
+            "team2_score_projected": FantasyFootballPlugin._format_projected(
+                opponent
+            ),
             "week": str(league["current_week"]),
             "matchup_type": "PLAYOFF" if is_playoff else "REGULAR",
         }

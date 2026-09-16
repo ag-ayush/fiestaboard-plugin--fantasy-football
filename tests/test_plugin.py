@@ -65,8 +65,8 @@ def test_matchup_matches_team_name_and_orients_scores(plugin_package):
     assert result["team2_rank"] == "4"
     assert result["team1_players_remaining"] == "3"
     assert result["team2_players_remaining"] == "1"
-    assert result["score1"] == "112.40"
-    assert result["score2"] == "98.70"
+    assert result["team1_score"] == "112.40"
+    assert result["team2_score"] == "98.70"
     assert result["score_margin"] == "+13.70"
 
 
@@ -76,8 +76,8 @@ def test_matchup_matches_abbreviation_and_orients_away_score(plugin_package):
     )
     assert result["team1"] == "Wolves"
     assert result["team2"] == "Tigers"
-    assert result["score1"] == "98.70"
-    assert result["score2"] == "112.40"
+    assert result["team1_score"] == "98.70"
+    assert result["team2_score"] == "112.40"
     assert result["score_margin"] == "-13.70"
 
 
@@ -90,7 +90,7 @@ def test_matchup_handles_a_bye(plugin_package):
     result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
     assert result["team2"] == "BYE"
     assert result["team2_abbrev"] == "BYE"
-    assert result["score2"] == "0.00"
+    assert result["team2_score"] == "0.00"
 
 
 def test_fetch_data_returns_index_and_partial_errors(
@@ -293,8 +293,8 @@ def test_matchup_uses_fallback_name_and_playoff_data(plugin_package):
     league["schedule"][0]["home"]["totalProjectedPointsLive"] = -1
     result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
     assert result["team1"] == "The Tigers"
-    assert result["score1"] == "88.00"
-    assert result["score1_projected"] == ""
+    assert result["team1_score"] == "88.00"
+    assert result["team1_score_projected"] == ""
     assert result["matchup_type"] == "PLAYOFF"
 
 
@@ -347,6 +347,6 @@ def test_manifest_declares_requested_index_fields(manifest):
         "team2",
         "team1_abbrev",
         "team2_abbrev",
-        "score1",
-        "score2",
+        "team1_score",
+        "team2_score",
     } <= set(fields)

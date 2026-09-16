@@ -1,7 +1,7 @@
 {
   "id": "fantasy_football",
   "name": "Fantasy Football Scores",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Live ESPN fantasy-football matchup scores for selected league teams.",
   "author": "FiestaBoard Community",
   "icon": "trophy",
@@ -73,7 +73,7 @@
     "arrays": {
       "index": {
         "label_field": "team1",
-        "item_fields": ["league_name", "team1", "team2", "team1_abbrev", "team2_abbrev", "team1_record", "team2_record", "team1_rank", "team2_rank", "team1_players_remaining", "team2_players_remaining", "score1", "score2", "score_margin", "score1_projected", "score2_projected", "week", "matchup_type"]
+        "item_fields": ["league_name", "team1", "team2", "team1_abbrev", "team2_abbrev", "team1_record", "team2_record", "team1_rank", "team2_rank", "team1_players_remaining", "team2_players_remaining", "team1_score", "team2_score", "score_margin", "team1_score_projected", "team2_score_projected", "week", "matchup_type"]
       }
     },
     "simple": {
@@ -105,11 +105,11 @@
     "index.*.team2_rank": 2,
     "index.*.team1_players_remaining": 2,
     "index.*.team2_players_remaining": 2,
-    "index.*.score1": 8,
-    "index.*.score2": 8,
+    "index.*.team1_score": 8,
+    "index.*.team2_score": 8,
     "index.*.score_margin": 8,
-    "index.*.score1_projected": 8,
-    "index.*.score2_projected": 8,
+    "index.*.team1_score_projected": 8,
+    "index.*.team2_score_projected": 8,
     "index.*.week": 2,
     "index.*.matchup_type": 12
   },
@@ -119,8 +119,8 @@
       "template": [
         "FF WEEK {{fantasy_football.index.0.week}} {{fantasy_football.index.0.matchup_type}}",
         "MATCHUP {{fantasy_football.index.0.team1_abbrev}} V {{fantasy_football.index.0.team2_abbrev}}",
-        "{{fantasy_football.index.0.team1_abbrev}}          {{fantasy_football.index.0.score1}}",
-        "{{fantasy_football.index.0.team2_abbrev}}          {{fantasy_football.index.0.score2}}",
+        "{{fantasy_football.index.0.team1_abbrev}}          {{fantasy_football.index.0.team1_score}}",
+        "{{fantasy_football.index.0.team2_abbrev}}          {{fantasy_football.index.0.team2_score}}",
         "MARGIN {{fantasy_football.index.0.score_margin}}",
         "LEFT {{fantasy_football.index.0.team1_players_remaining}} V {{fantasy_football.index.0.team2_players_remaining}}"
       ],
@@ -136,9 +136,9 @@
     "note": {
       "name": "Fantasy Football Scores Demo",
       "template": [
-        "{{fantasy_football.index.0.team1_abbrev}} {{fantasy_football.index.0.score1}} {{fantasy_football.index.0.team1_record}}",
-        "{{fantasy_football.index.0.team2_abbrev}} {{fantasy_football.index.0.score2}} {{fantasy_football.index.0.team2_record}}",
-        "M{{fantasy_football.index.0.score_margin}} R{{fantasy_football.index.0.team1_rank}}-{{fantasy_football.index.0.team2_rank}}"
+        "WEEK {{fantasy_football.index.0.week}} {{fantasy_football.index.0.matchup_type}}",
+        "{{fantasy_football.index.0.team1_abbrev}} ({{fantasy_football.index.0.team1_rank}}) {{fantasy_football.index.0.team1_score}}",
+        "{{fantasy_football.index.0.team2_abbrev}} ({{fantasy_football.index.0.team2_rank}}) {{fantasy_football.index.0.team2_score}}"
       ],
       "line_metadata": [
         {"alignment": "center", "wrap": false},

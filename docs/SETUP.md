@@ -65,11 +65,11 @@ accidentally omitted, but copying the full cookie value is preferred.
 Add a page using the first configured matchup:
 
 ```
-{{fantasy_football.index.0.team1_abbrev}} {{fantasy_football.index.0.score1}}
-{{fantasy_football.index.0.team2_abbrev}} {{fantasy_football.index.0.score2}}
+{{fantasy_football.index.0.team1_abbrev}} {{fantasy_football.index.0.team1_score}}
+{{fantasy_football.index.0.team2_abbrev}} {{fantasy_football.index.0.team2_score}}
 ```
 
-Use `score_margin`, `score1_projected`, `score2_projected`, `team1_record`,
+Use `score_margin`, `team1_score_projected`, `team2_score_projected`, `team1_record`,
 `team1_rank`, or `team1_players_remaining` if those fit your layout.
 `score_margin` is positive when team1 leads and negative when it trails. A bye
 returns `BYE` for `team2` and `team2_abbrev`. Players remaining is blank whenever
