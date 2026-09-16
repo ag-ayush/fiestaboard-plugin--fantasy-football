@@ -175,6 +175,8 @@ class FantasyFootballPlugin(PluginBase):
     def _cookies(self) -> dict[str, str] | None:
         espn_s2 = str(self.config.get("espn_s2") or "").strip()
         swid = str(self.config.get("swid") or "").strip()
+        if swid and not (swid.startswith("{") and swid.endswith("}")):
+            swid = f"{{{swid}}}"
         return {"espn_s2": espn_s2, "SWID": swid} if espn_s2 and swid else None
 
     @staticmethod

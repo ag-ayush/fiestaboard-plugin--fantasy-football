@@ -144,6 +144,16 @@ def test_get_json_uses_private_cookies_and_repeated_views(
     assert captured["params"] == [("view", "mTeam"), ("view", "mSettings")]
 
 
+def test_cookies_adds_missing_swid_braces(plugin):
+    plugin.config.update(
+        {"espn_s2": "cookie", "swid": "F7900531-DB89-4ED5-AD2F-245A579369A6"}
+    )
+    assert plugin._cookies() == {
+        "espn_s2": "cookie",
+        "SWID": "{F7900531-DB89-4ED5-AD2F-245A579369A6}",
+    }
+
+
 @pytest.mark.parametrize(
     ("status_code", "expected_exception"),
     [(401, PermissionError), (404, ValueError)],

@@ -53,7 +53,8 @@ The [`espn-api` private-league credential guide](https://github.com/cwendt94/esp
 has browser-specific illustrations and alternatives if the cookie table is hard to find.
 
 Treat both values as passwords. Do not add them to a template, commit them, or
-share them in screenshots.
+share them in screenshots or chat. The plugin will add SWID braces if they are
+accidentally omitted, but copying the full cookie value is preferred.
 
 ### 3. Create a Board Template
 
