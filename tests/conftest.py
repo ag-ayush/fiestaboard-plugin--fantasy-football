@@ -3,8 +3,9 @@
 import json
 from pathlib import Path
 
-import plugins.fantasy_football as fantasy_football_module
 import pytest
+
+import plugins.fantasy_football as fantasy_football_module
 
 ROOT = Path(__file__).parent.parent
 

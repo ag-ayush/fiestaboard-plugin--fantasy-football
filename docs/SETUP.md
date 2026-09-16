@@ -40,14 +40,18 @@ For a private league, enter both masked credentials:
 - **ESPN S2 cookie** (`espn_s2`)
 - **ESPN SWID cookie** (`SWID`, including its braces)
 
-To find them, sign in to ESPN in a desktop browser, then open Developer Tools:
+To find them in Chrome, sign in to your ESPN Fantasy Football account at
+`https://fantasy.espn.com`, then:
 
-1. In Chrome/Edge, use **F12** or **More tools → Developer tools**. In Firefox,
-   use **F12** or **Tools → Browser Tools → Web Developer Tools**.
-2. Open **Application** (Chrome/Edge) or **Storage** (Firefox), then expand
-   **Cookies** and select `https://www.espn.com`.
-3. Copy the cookie values named `espn_s2` and `SWID` into their matching masked
+1. Right-click anywhere on the page and choose **Inspect**.
+2. Open the **Application** tab.
+3. Under **Storage**, expand **Cookies** and select `https://fantasy.espn.com`.
+4. Copy the cookie values named `espn_s2` and `SWID` into their matching masked
    FiestaBoard fields. Copy the value only, and keep the braces around SWID.
+
+These values normally remain the same between browser sessions, but ESPN can
+replace them. If private-league access stops working, retrieve the current values
+again from the same ESPN account that belongs to the league.
 
 The [`espn-api` private-league credential guide](https://github.com/cwendt94/espn-api/discussions/150)
 has browser-specific illustrations and alternatives if the cookie table is hard to find.
@@ -65,14 +69,25 @@ Add a page using the first configured matchup:
 {{fantasy_football.index.0.team2_abbrev}} {{fantasy_football.index.0.score2}}
 ```
 
-Use `score1_projected`, `score2_projected`, or `matchup_type` if those fit your
-layout. A bye returns `BYE` for `team2` and `team2_abbrev`.
+Use `score_margin`, `score1_projected`, `score2_projected`, `team1_record`,
+`team1_rank`, or `team1_players_remaining` if those fit your layout.
+`score_margin` is positive when team1 leads and negative when it trails. A bye
+returns `BYE` for `team2` and `team2_abbrev`. Players remaining is blank whenever
+ESPN does not provide live matchup data.
 
 ### 4. View on Your Board
 
 Save the page, select it for your board, and wait for the configured refresh
 interval. Confirm that the displayed names and scores correspond to ESPN's current
 scoring week.
+
+### Optional: Create the Bundled Demo Page
+
+After you save at least one **League teams** entry, FiestaBoard's Integration
+settings for Fantasy Football Scores offers **Create Demo Page**. It creates a
+managed example page for your configured board type using the first matchup
+(`fantasy_football.index.0`). Use **Recreate Demo Page** there if you want to
+replace that example with a fresh copy.
 
 ## Template Variables
 

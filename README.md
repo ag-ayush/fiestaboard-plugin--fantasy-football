@@ -24,8 +24,15 @@ Each configured entry is exposed in the same order under `fantasy_football.index
 | `{{fantasy_football.index.0.team2}}` | `Wolves` | Current opponent, or `BYE` |
 | `{{fantasy_football.index.0.team1_abbrev}}` | `TIG` | Configured team abbreviation |
 | `{{fantasy_football.index.0.team2_abbrev}}` | `WLV` | Opponent abbreviation |
+| `{{fantasy_football.index.0.team1_record}}` | `4-1` | Configured team's overall record |
+| `{{fantasy_football.index.0.team2_record}}` | `3-2` | Opponent's overall record |
+| `{{fantasy_football.index.0.team1_rank}}` | `2` | Configured team's current ESPN standing |
+| `{{fantasy_football.index.0.team2_rank}}` | `4` | Opponent's current ESPN standing |
+| `{{fantasy_football.index.0.team1_players_remaining}}` | `3` | Configured team's active starters yet to play, when ESPN reports live data |
+| `{{fantasy_football.index.0.team2_players_remaining}}` | `1` | Opponent's active starters yet to play, when ESPN reports live data |
 | `{{fantasy_football.index.0.score1}}` | `112.40` | Configured team's score |
 | `{{fantasy_football.index.0.score2}}` | `98.70` | Opponent's score |
+| `{{fantasy_football.index.0.score_margin}}` | `+13.70` | Team1's signed lead or deficit |
 | `{{fantasy_football.index.0.score1_projected}}` | `114.25` | Configured team's projected score, when ESPN provides it |
 | `{{fantasy_football.index.0.score2_projected}}` | `99.50` | Opponent's projected score, when ESPN provides it |
 | `{{fantasy_football.index.0.week}}` | `3` | ESPN current scoring week |

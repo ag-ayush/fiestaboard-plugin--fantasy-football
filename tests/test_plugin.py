@@ -6,20 +6,35 @@ import pytest
 def fake_league():
     return {
         "teams": [
-            {"id": 1, "name": "Tigers", "abbrev": "TIG"},
-            {"id": 2, "name": "Wolves", "abbrev": "WLV"},
+            {
+                "id": 1,
+                "name": "Tigers",
+                "abbrev": "TIG",
+                "record": {"overall": {"wins": 4, "losses": 1, "ties": 0}},
+                "playoffSeed": 2,
+            },
+            {
+                "id": 2,
+                "name": "Wolves",
+                "abbrev": "WLV",
+                "record": {"overall": {"wins": 3, "losses": 2, "ties": 1}},
+                "playoffSeed": 4,
+            },
         ],
         "current_week": 3,
         "league_name": "Sunday League",
+        "starter_count": 9,
         "schedule": [
             {
                 "home": {
                     "teamId": 1,
+                    "gamesPlayed": 6,
                     "totalPointsLive": 112.4,
                     "totalProjectedPointsLive": 114.25,
                 },
                 "away": {
                     "teamId": 2,
+                    "gamesPlayed": 8,
                     "totalPointsLive": 98.7,
                     "totalProjectedPointsLive": 99.5,
                 },
@@ -44,8 +59,15 @@ def test_matchup_matches_team_name_and_orients_scores(plugin_package):
     assert result["team2"] == "Wolves"
     assert result["team1_abbrev"] == "TIG"
     assert result["team2_abbrev"] == "WLV"
+    assert result["team1_record"] == "4-1"
+    assert result["team2_record"] == "3-2-1"
+    assert result["team1_rank"] == "2"
+    assert result["team2_rank"] == "4"
+    assert result["team1_players_remaining"] == "3"
+    assert result["team2_players_remaining"] == "1"
     assert result["score1"] == "112.40"
     assert result["score2"] == "98.70"
+    assert result["score_margin"] == "+13.70"
 
 
 def test_matchup_matches_abbreviation_and_orients_away_score(plugin_package):
@@ -56,6 +78,7 @@ def test_matchup_matches_abbreviation_and_orients_away_score(plugin_package):
     assert result["team2"] == "Tigers"
     assert result["score1"] == "98.70"
     assert result["score2"] == "112.40"
+    assert result["score_margin"] == "-13.70"
 
 
 def test_matchup_handles_a_bye(plugin_package):
@@ -202,7 +225,10 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
                 "finalScoringPeriod": 4,
             },
             "teams": [{"id": 1}],
-            "settings": {"name": "Sunday League"},
+            "settings": {
+                "name": "Sunday League",
+                "rosterSettings": {"lineupSlotCounts": {"0": 1, "2": 2, "20": 6}},
+            },
         },
         {"schedule": [{"home": {"teamId": 1}}]},
     ]
@@ -216,6 +242,7 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
     league = plugin._fetch_league(42, 2026)
     assert league["current_week"] == 4
     assert league["league_name"] == "Sunday League"
+    assert league["starter_count"] == 3
     assert league["schedule"] == [{"home": {"teamId": 1}}]
     assert "lm-api-reads.fantasy.espn.com" in calls[0][0]
     assert calls[1][1][-1] == ("scoringPeriodId", 4)
@@ -269,6 +296,18 @@ def test_matchup_uses_fallback_name_and_playoff_data(plugin_package):
     assert result["score1"] == "88.00"
     assert result["score1_projected"] == ""
     assert result["matchup_type"] == "PLAYOFF"
+
+
+def test_players_remaining_is_blank_without_live_espn_data(plugin_package):
+    league = fake_league()
+    league["schedule"][0]["home"].pop("totalPointsLive")
+    result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
+    assert result["team1_players_remaining"] == ""
+
+
+def test_starter_count_excludes_bench_and_reserve_slots(plugin_package):
+    settings = {"rosterSettings": {"lineupSlotCounts": {"0": 1, "20": 7, "21": 1, "24": 1}}}
+    assert plugin_package.FantasyFootballPlugin._starter_count(settings) == 1
 
 
 @pytest.mark.parametrize(

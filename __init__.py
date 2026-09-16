@@ -7,6 +7,7 @@ import logging
 from typing import Any
 
 import requests
+
 from src.plugins.base import PluginBase, PluginResult
 
 logger = logging.getLogger(__name__)
@@ -146,6 +147,7 @@ class FantasyFootballPlugin(PluginBase):
             "schedule": scoreboard.get("schedule") or [],
             "current_week": current_week,
             "league_name": str((metadata.get("settings") or {}).get("name") or ""),
+            "starter_count": self._starter_count(metadata.get("settings") or {}),
         }
 
     def _get_json(
@@ -231,8 +233,21 @@ class FantasyFootballPlugin(PluginBase):
             "team2_abbrev": str(opponent_team.get("abbrev") or "BYE")
             if opponent_team
             else "BYE",
+            "team1_record": FantasyFootballPlugin._team_record(team),
+            "team2_record": FantasyFootballPlugin._team_record(opponent_team),
+            "team1_rank": FantasyFootballPlugin._team_rank(team),
+            "team2_rank": FantasyFootballPlugin._team_rank(opponent_team),
+            "team1_players_remaining": FantasyFootballPlugin._players_remaining(
+                current, league.get("starter_count", 0)
+            ),
+            "team2_players_remaining": FantasyFootballPlugin._players_remaining(
+                opponent, league.get("starter_count", 0)
+            ),
             "score1": FantasyFootballPlugin._format_score(current),
             "score2": FantasyFootballPlugin._format_score(opponent),
+            "score_margin": FantasyFootballPlugin._format_score_margin(
+                current, opponent
+            ),
             "score1_projected": FantasyFootballPlugin._format_projected(current),
             "score2_projected": FantasyFootballPlugin._format_projected(opponent),
             "week": str(league["current_week"]),
@@ -248,11 +263,70 @@ class FantasyFootballPlugin(PluginBase):
         ).strip()
 
     @staticmethod
+    def _team_record(team: dict[str, Any] | None) -> str:
+        """Format ESPN's overall team record, including ties when present."""
+        overall = (team or {}).get("record", {}).get("overall", {})
+        try:
+            wins = int(overall.get("wins", 0))
+            losses = int(overall.get("losses", 0))
+            ties = int(overall.get("ties", 0))
+        except (TypeError, ValueError):
+            return ""
+        return f"{wins}-{losses}" if not ties else f"{wins}-{losses}-{ties}"
+
+    @staticmethod
+    def _team_rank(team: dict[str, Any] | None) -> str:
+        """Return ESPN's current playoff-seed standing when it is available."""
+        try:
+            seed = int((team or {}).get("playoffSeed", 0))
+        except (TypeError, ValueError):
+            return ""
+        return str(seed) if seed > 0 else ""
+
+    @staticmethod
+    def _starter_count(settings: dict[str, Any]) -> int:
+        """Count active lineup slots, excluding bench and reserve positions."""
+        slot_counts = (
+            settings.get("rosterSettings", {}).get("lineupSlotCounts", {})
+        )
+        if not isinstance(slot_counts, dict):
+            return 0
+        total = 0
+        for slot_id, count in slot_counts.items():
+            if str(slot_id) in {"20", "21", "24"}:
+                continue
+            try:
+                total += max(int(count), 0)
+            except (TypeError, ValueError):
+                continue
+        return total
+
+    @staticmethod
+    def _players_remaining(side: dict[str, Any], starter_count: int) -> str:
+        """Return active starters yet to play when ESPN has live matchup data."""
+        if starter_count < 1 or "totalPointsLive" not in side:
+            return ""
+        try:
+            games_played = int(side.get("gamesPlayed"))
+        except (TypeError, ValueError):
+            return ""
+        return str(max(starter_count - games_played, 0))
+
+    @staticmethod
     def _format_score(side: dict[str, Any]) -> str:
+        return f"{FantasyFootballPlugin._score_value(side):.2f}"
+
+    @staticmethod
+    def _format_score_margin(team1: dict[str, Any], team2: dict[str, Any]) -> str:
+        """Format team1's signed live-score difference against team2."""
+        return f"{FantasyFootballPlugin._score_value(team1) - FantasyFootballPlugin._score_value(team2):+.2f}"
+
+    @staticmethod
+    def _score_value(side: dict[str, Any]) -> float:
         score = side.get("totalPointsLive")
         if score is None:
             score = side.get("totalPoints", 0)
-        return f"{float(score):.2f}"
+        return float(score)
 
     @staticmethod
     def _format_projected(side: dict[str, Any]) -> str:
