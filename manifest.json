@@ -1,7 +1,7 @@
 {
   "id": "fantasy_football",
   "name": "Fantasy Football Scores",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Live ESPN fantasy-football matchup scores for selected league teams.",
   "author": "FiestaBoard Community",
   "icon": "trophy",
