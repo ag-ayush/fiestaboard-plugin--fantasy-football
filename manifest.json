@@ -1,0 +1,121 @@
+{
+  "id": "fantasy_football",
+  "name": "Fantasy Football Scores",
+  "version": "1.0.0",
+  "description": "Live ESPN fantasy-football matchup scores for selected league teams.",
+  "author": "FiestaBoard Community",
+  "icon": "trophy",
+  "category": "entertainment",
+  "repository": "https://github.com/agoel/fiestaboard-plugin--fantasy-football",
+  "documentation": "README.md",
+  "min_refresh_seconds": 60,
+  "settings_schema": {
+    "type": "object",
+    "properties": {
+      "league_teams": {
+        "type": "array",
+        "title": "League teams",
+        "description": "Add one entry for every ESPN league and team to show. League ID + team name or abbreviation is the lookup key.",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "league_id": {
+              "type": "integer",
+              "title": "ESPN league ID",
+              "minimum": 1
+            },
+            "team": {
+              "type": "string",
+              "title": "Team name or abbreviation",
+              "minLength": 1,
+              "description": "Matches ESPN's team name or abbreviation, ignoring case."
+            }
+          },
+          "required": ["league_id", "team"]
+        }
+      },
+      "year": {
+        "type": "integer",
+        "title": "ESPN season year",
+        "description": "Use the season associated with the league, including the year for historical scores.",
+        "default": 2026,
+        "minimum": 2019
+      },
+      "espn_s2": {
+        "type": "string",
+        "title": "ESPN S2 cookie (private leagues only)",
+        "description": "Leave blank for public leagues. For private leagues, sign in to ESPN in a desktop browser, open Developer Tools > Application/Storage > Cookies > https://www.espn.com, and copy the espn_s2 cookie VALUE (not its name). Enter it with SWID. Help: https://github.com/cwendt94/espn-api/discussions/150",
+        "ui:widget": "password"
+      },
+      "swid": {
+        "type": "string",
+        "title": "ESPN SWID cookie (private leagues only)",
+        "description": "Copy the SWID cookie VALUE from the same ESPN browser-cookie list as ESPN S2. Keep the braces, for example {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}. Both values are required. Step-by-step help: https://github.com/cwendt94/espn-api/discussions/150",
+        "ui:widget": "password"
+      },
+      "refresh_seconds": {
+        "type": "integer",
+        "title": "Refresh interval (seconds)",
+        "description": "How often FiestaBoard refreshes live scores.",
+        "default": 300,
+        "minimum": 60,
+        "maximum": 3600
+      }
+    },
+    "required": ["league_teams"]
+  },
+  "variables": {
+    "groups": {
+      "matchup": {"label": "Current matchup"},
+      "league": {"label": "League details"}
+    },
+    "arrays": {
+      "index": {
+        "label_field": "team1",
+        "item_fields": ["league_id", "team1", "team2", "team1_abbrev", "team2_abbrev", "score1", "score2", "score1_projected", "score2_projected", "week", "matchup_type", "is_playoff"]
+      }
+    },
+    "simple": {
+      "current_week": {
+        "description": "Current scoring week from the first configured league.",
+        "type": "number",
+        "max_length": 2,
+        "group": "league",
+        "example": "3"
+      },
+      "fetch_errors": {
+        "description": "Errors for league/team entries that could not be fetched.",
+        "type": "string",
+        "max_length": 80,
+        "group": "league",
+        "example": ""
+      }
+    }
+  },
+  "max_lengths": {
+    "index.*.league_id": 12,
+    "index.*.team1": 22,
+    "index.*.team2": 22,
+    "index.*.team1_abbrev": 8,
+    "index.*.team2_abbrev": 8,
+    "index.*.score1": 8,
+    "index.*.score2": 8,
+    "index.*.score1_projected": 8,
+    "index.*.score2_projected": 8,
+    "index.*.week": 2,
+    "index.*.matchup_type": 12,
+    "index.*.is_playoff": 5
+  },
+  "teaser": "FANTASY SCORES",
+  "previews": [
+    {
+      "device_type": "flagship",
+      "rows": [" FANTASY FOOTBALL ", "TIGERS      112.4", "WOLVES       98.7"]
+    },
+    {
+      "device_type": "note",
+      "rows": ["FANTASY SCORE", "TIGERS  112.4", "WOLVES   98.7"]
+    }
+  ]
+}
