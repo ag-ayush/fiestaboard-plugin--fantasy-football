@@ -45,13 +45,13 @@
       "espn_s2": {
         "type": "string",
         "title": "ESPN S2 cookie (private leagues only)",
-        "description": "Leave blank for public leagues. For private leagues, sign in to ESPN in a desktop browser, open Developer Tools > Application/Storage > Cookies > https://www.espn.com, and copy the espn_s2 cookie VALUE (not its name). Enter it with SWID. Help: https://github.com/cwendt94/espn-api/discussions/150",
+        "description": "Leave blank for public leagues. Help: https://github.com/cwendt94/espn-api/discussions/150",
         "ui:widget": "password"
       },
       "swid": {
         "type": "string",
         "title": "ESPN SWID cookie (private leagues only)",
-        "description": "Copy the SWID cookie VALUE from the same ESPN browser-cookie list as ESPN S2. Keep the braces, for example {XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}. Both values are required. Step-by-step help: https://github.com/cwendt94/espn-api/discussions/150",
+        "description": "Leave blank for public leagues. Help: https://github.com/cwendt94/espn-api/discussions/150",
         "ui:widget": "password"
       },
       "refresh_seconds": {
