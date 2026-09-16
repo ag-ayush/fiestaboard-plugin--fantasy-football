@@ -47,7 +47,7 @@ class FantasyFootballPlugin(PluginBase):
                 if current_week is None:
                     current_week = league["current_week"]
                 matchups.append(
-                    self._matchup_for_team(league, league_id, selected_team)
+                    self._matchup_for_team(league, selected_team)
                 )
             except Exception as exc:
                 league_label = (
@@ -145,6 +145,7 @@ class FantasyFootballPlugin(PluginBase):
             "teams": metadata.get("teams") or [],
             "schedule": scoreboard.get("schedule") or [],
             "current_week": current_week,
+            "league_name": str((metadata.get("settings") or {}).get("name") or ""),
         }
 
     def _get_json(
@@ -180,9 +181,7 @@ class FantasyFootballPlugin(PluginBase):
         return {"espn_s2": espn_s2, "SWID": swid} if espn_s2 and swid else None
 
     @staticmethod
-    def _matchup_for_team(
-        league: dict[str, Any], league_id: int, selected_team: str
-    ) -> dict[str, Any]:
+    def _matchup_for_team(league: dict[str, Any], selected_team: str) -> dict[str, Any]:
         teams = {
             int(team["id"]): team
             for team in league["teams"]
@@ -223,7 +222,7 @@ class FantasyFootballPlugin(PluginBase):
         opponent_team = teams.get(int(opponent.get("teamId", -1)))
         is_playoff = matchup.get("playoffTierType", "NONE") != "NONE"
         return {
-            "league_id": str(league_id),
+            "league_name": str(league.get("league_name") or "Unknown league"),
             "team1": FantasyFootballPlugin._team_name(team),
             "team2": FantasyFootballPlugin._team_name(opponent_team)
             if opponent_team
@@ -238,7 +237,6 @@ class FantasyFootballPlugin(PluginBase):
             "score2_projected": FantasyFootballPlugin._format_projected(opponent),
             "week": str(league["current_week"]),
             "matchup_type": "PLAYOFF" if is_playoff else "REGULAR",
-            "is_playoff": str(is_playoff).lower(),
         }
 
     @staticmethod

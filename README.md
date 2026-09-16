@@ -19,6 +19,7 @@ Each configured entry is exposed in the same order under `fantasy_football.index
 
 | Variable | Example | Description |
 | --- | --- | --- |
+| `{{fantasy_football.index.0.league_name}}` | `Sunday League` | ESPN league name |
 | `{{fantasy_football.index.0.team1}}` | `Tigers` | Configured ESPN team |
 | `{{fantasy_football.index.0.team2}}` | `Wolves` | Current opponent, or `BYE` |
 | `{{fantasy_football.index.0.team1_abbrev}}` | `TIG` | Configured team abbreviation |
@@ -29,7 +30,6 @@ Each configured entry is exposed in the same order under `fantasy_football.index
 | `{{fantasy_football.index.0.score2_projected}}` | `99.50` | Opponent's projected score, when ESPN provides it |
 | `{{fantasy_football.index.0.week}}` | `3` | ESPN current scoring week |
 | `{{fantasy_football.index.0.matchup_type}}` | `REGULAR` | `REGULAR` or `PLAYOFF` |
-| `{{fantasy_football.index.0.is_playoff}}` | `false` | Whether ESPN reports a playoff matchup |
 
 ### League details
 

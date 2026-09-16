@@ -10,6 +10,7 @@ def fake_league():
             {"id": 2, "name": "Wolves", "abbrev": "WLV"},
         ],
         "current_week": 3,
+        "league_name": "Sunday League",
         "schedule": [
             {
                 "home": {
@@ -36,8 +37,9 @@ def test_plugin_id(plugin_package, manifest):
 
 def test_matchup_matches_team_name_and_orients_scores(plugin_package):
     result = plugin_package.FantasyFootballPlugin._matchup_for_team(
-        fake_league(), 42, "tigers"
+        fake_league(), "tigers"
     )
+    assert result["league_name"] == "Sunday League"
     assert result["team1"] == "Tigers"
     assert result["team2"] == "Wolves"
     assert result["team1_abbrev"] == "TIG"
@@ -48,7 +50,7 @@ def test_matchup_matches_team_name_and_orients_scores(plugin_package):
 
 def test_matchup_matches_abbreviation_and_orients_away_score(plugin_package):
     result = plugin_package.FantasyFootballPlugin._matchup_for_team(
-        fake_league(), 42, "wlv"
+        fake_league(), "wlv"
     )
     assert result["team1"] == "Wolves"
     assert result["team2"] == "Tigers"
@@ -62,7 +64,7 @@ def test_matchup_handles_a_bye(plugin_package):
         "current_week": 3,
         "schedule": [{"away": {"teamId": 1, "totalPointsLive": 112.4}}],
     }
-    result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, 42, "TIG")
+    result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
     assert result["team2"] == "BYE"
     assert result["team2_abbrev"] == "BYE"
     assert result["score2"] == "0.00"
@@ -200,6 +202,7 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
                 "finalScoringPeriod": 4,
             },
             "teams": [{"id": 1}],
+            "settings": {"name": "Sunday League"},
         },
         {"schedule": [{"home": {"teamId": 1}}]},
     ]
@@ -212,6 +215,7 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
     monkeypatch.setattr(plugin, "_get_json", get_json)
     league = plugin._fetch_league(42, 2026)
     assert league["current_week"] == 4
+    assert league["league_name"] == "Sunday League"
     assert league["schedule"] == [{"home": {"teamId": 1}}]
     assert "lm-api-reads.fantasy.espn.com" in calls[0][0]
     assert calls[1][1][-1] == ("scoringPeriodId", 4)
@@ -240,12 +244,12 @@ def test_fetch_league_rejects_missing_current_period(plugin, monkeypatch):
 def test_matchup_rejects_unknown_team_and_missing_matchup(plugin_package):
     with pytest.raises(ValueError, match="was not found"):
         plugin_package.FantasyFootballPlugin._matchup_for_team(
-            fake_league(), 42, "Otters"
+            fake_league(), "Otters"
         )
     league = fake_league()
     league["schedule"] = []
     with pytest.raises(ValueError, match="no current matchup"):
-        plugin_package.FantasyFootballPlugin._matchup_for_team(league, 42, "TIG")
+        plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
 
 
 def test_matchup_uses_fallback_name_and_playoff_data(plugin_package):
@@ -260,12 +264,11 @@ def test_matchup_uses_fallback_name_and_playoff_data(plugin_package):
     league["schedule"][0]["home"]["totalPointsLive"] = None
     league["schedule"][0]["home"]["totalPoints"] = 88
     league["schedule"][0]["home"]["totalProjectedPointsLive"] = -1
-    result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, 42, "TIG")
+    result = plugin_package.FantasyFootballPlugin._matchup_for_team(league, "TIG")
     assert result["team1"] == "The Tigers"
     assert result["score1"] == "88.00"
     assert result["score1_projected"] == ""
     assert result["matchup_type"] == "PLAYOFF"
-    assert result["is_playoff"] == "true"
 
 
 @pytest.mark.parametrize(
