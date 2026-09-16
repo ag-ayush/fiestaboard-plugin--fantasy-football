@@ -118,11 +118,14 @@ class FantasyFootballPlugin(PluginBase):
         metadata = self._get_json(url, [("view", "mTeam"), ("view", "mSettings")])
         status = metadata.get("status") or {}
         current_week = int(
-            status.get("latestScoringPeriod")
+            metadata.get("scoringPeriodId")
+            or status.get("latestScoringPeriod")
             or status.get("currentScoringPeriod")
             or status.get("currentMatchupPeriod")
             or 0
         )
+        final_week = int(status.get("finalScoringPeriod") or current_week)
+        current_week = min(current_week, final_week)
         matchup_period = int(status.get("currentMatchupPeriod") or current_week)
         if current_week < 1 or matchup_period < 1:
             raise ValueError("ESPN did not provide a current scoring period")

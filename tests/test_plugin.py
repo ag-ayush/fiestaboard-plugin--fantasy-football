@@ -183,7 +183,12 @@ def test_get_json_returns_first_item_from_list_payload(
 def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
     responses = [
         {
-            "status": {"latestScoringPeriod": 4, "currentMatchupPeriod": 3},
+            "scoringPeriodId": 4,
+            "status": {
+                "latestScoringPeriod": 5,
+                "currentMatchupPeriod": 3,
+                "finalScoringPeriod": 4,
+            },
             "teams": [{"id": 1}],
         },
         {"schedule": [{"home": {"teamId": 1}}]},
@@ -200,6 +205,19 @@ def test_fetch_league_requests_metadata_and_scoreboard(plugin, monkeypatch):
     assert league["schedule"] == [{"home": {"teamId": 1}}]
     assert calls[1][1][-1] == ("scoringPeriodId", 4)
     assert '"value": [3]' in calls[1][2]["x-fantasy-filter"]
+
+
+def test_fetch_league_clamps_postseason_scoring_period(plugin, monkeypatch):
+    responses = [
+        {
+            "scoringPeriodId": 18,
+            "status": {"currentMatchupPeriod": 17, "finalScoringPeriod": 17},
+            "teams": [],
+        },
+        {"schedule": []},
+    ]
+    monkeypatch.setattr(plugin, "_get_json", lambda *args, **kwargs: responses.pop(0))
+    assert plugin._fetch_league(42, 2026)["current_week"] == 17
 
 
 def test_fetch_league_rejects_missing_current_period(plugin, monkeypatch):
