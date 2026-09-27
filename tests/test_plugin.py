@@ -350,3 +350,24 @@ def test_manifest_declares_requested_index_fields(manifest):
         "team1_score",
         "team2_score",
     } <= set(fields)
+
+
+def test_demo_score_rows_pad_abbreviations_and_fill_space(manifest):
+    expected_score_row = (
+        "{{= PADLEFT(fantasy_football.index.0.team1_abbrev, 4) }}"
+        "({{fantasy_football.index.0.team1_rank}}) {{fill_space}} "
+        "{{fantasy_football.index.0.team1_score}}"
+    )
+    assert manifest["demo"]["note"]["template"] == [
+        "{{fantasy_football.index.0.league_name}}",
+        expected_score_row,
+        expected_score_row.replace("team1", "team2"),
+    ]
+    assert manifest["demo"]["flagship"]["template"][2:4] == [
+        expected_score_row,
+        expected_score_row.replace("team1", "team2"),
+    ]
+    assert all(
+        line["alignment"] == "center"
+        for line in manifest["demo"]["flagship"]["line_metadata"]
+    )

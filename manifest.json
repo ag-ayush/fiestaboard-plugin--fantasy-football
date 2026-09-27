@@ -1,7 +1,7 @@
 {
   "id": "fantasy_football",
   "name": "Fantasy Football Scores",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Live ESPN fantasy-football matchup scores for selected league teams.",
   "author": "FiestaBoard Community",
   "icon": "trophy",
@@ -119,16 +119,16 @@
       "template": [
         "FF WEEK {{fantasy_football.index.0.week}} {{fantasy_football.index.0.matchup_type}}",
         "MATCHUP {{fantasy_football.index.0.team1_abbrev}} V {{fantasy_football.index.0.team2_abbrev}}",
-        "{{fantasy_football.index.0.team1_abbrev}}          {{fantasy_football.index.0.team1_score}}",
-        "{{fantasy_football.index.0.team2_abbrev}}          {{fantasy_football.index.0.team2_score}}",
+        "{{= PADLEFT(fantasy_football.index.0.team1_abbrev, 4) }}({{fantasy_football.index.0.team1_rank}}) {{fill_space}} {{fantasy_football.index.0.team1_score}}",
+        "{{= PADLEFT(fantasy_football.index.0.team2_abbrev, 4) }}({{fantasy_football.index.0.team2_rank}}) {{fill_space}} {{fantasy_football.index.0.team2_score}}",
         "MARGIN {{fantasy_football.index.0.score_margin}}",
         "LEFT {{fantasy_football.index.0.team1_players_remaining}} V {{fantasy_football.index.0.team2_players_remaining}}"
       ],
       "line_metadata": [
         {"alignment": "center", "wrap": false},
         {"alignment": "center", "wrap": false},
-        {"alignment": "left", "wrap": false},
-        {"alignment": "left", "wrap": false},
+        {"alignment": "center", "wrap": false},
+        {"alignment": "center", "wrap": false},
         {"alignment": "center", "wrap": false},
         {"alignment": "center", "wrap": false}
       ]
@@ -136,9 +136,9 @@
     "note": {
       "name": "Fantasy Football Scores Demo",
       "template": [
-        "WEEK {{fantasy_football.index.0.week}} {{fantasy_football.index.0.matchup_type}}",
-        "{{fantasy_football.index.0.team1_abbrev}} ({{fantasy_football.index.0.team1_rank}}) {{fantasy_football.index.0.team1_score}}",
-        "{{fantasy_football.index.0.team2_abbrev}} ({{fantasy_football.index.0.team2_rank}}) {{fantasy_football.index.0.team2_score}}"
+        "{{fantasy_football.index.0.league_name}}",
+        "{{= PADLEFT(fantasy_football.index.0.team1_abbrev, 4) }}({{fantasy_football.index.0.team1_rank}}) {{fill_space}} {{fantasy_football.index.0.team1_score}}",
+        "{{= PADLEFT(fantasy_football.index.0.team2_abbrev, 4) }}({{fantasy_football.index.0.team2_rank}}) {{fill_space}} {{fantasy_football.index.0.team2_score}}"
       ],
       "line_metadata": [
         {"alignment": "center", "wrap": false},
@@ -151,11 +151,11 @@
   "previews": [
     {
       "device_type": "flagship",
-      "rows": [" FANTASY FOOTBALL ", "TIGERS      112.4", "WOLVES       98.7"]
+      "rows": [" FANTASY FOOTBALL ", " TIG(2)         112.4", " WLV(4)          98.7"]
     },
     {
       "device_type": "note",
-      "rows": ["FANTASY SCORE", "TIGERS  112.4", "WOLVES   98.7"]
+      "rows": ["Sunday League", "TIG(2)    112.4", "WLV(4)     98.7"]
     }
   ]
 }
